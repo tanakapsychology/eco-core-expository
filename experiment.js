@@ -58,7 +58,11 @@ ctx.save();
 
 ctx.translate(40, 470);
 ctx.rotate(-Math.PI / 2);
-
+ctx.fillText(
+  "Exploration Capacity",
+  0,
+  0
+);
 ctx.restore();
 
 // ===== Freeze Threshold =====
@@ -195,19 +199,3 @@ ctx.fillText(
   60,
   350
 );
-ctx.fillText(
-  "Time / Branching Load",
-  430,
-  600
-);
-ctx.setLineDash([8,8]);
-
-ctx.strokeStyle = "black";
-ctx.lineWidth = 4;
-
-ctx.beginPath();
-ctx.moveTo(120, 420);
-ctx.lineTo(1020, 420);
-ctx.stroke();
-
-ctx.setLineDash([]);
