@@ -70,8 +70,8 @@ ctx.restore();
 // ===== Freeze Threshold =====
 ctx.setLineDash([10, 10]);
 
-ctx.strokeStyle = "gray";
-ctx.lineWidth = 2;
+ctx.strokeStyle = "black";
+ctx.lineWidth = 3;
 
 ctx.beginPath();
 ctx.moveTo(gx, 360);
@@ -187,12 +187,12 @@ ctx.font = "18px Arial";
 
 ctx.fillText(
   "Thick line = Global Search",
-  780,
-  360
+  760,
+  390
 );
 
 ctx.fillText(
   "Thin line = Local Processing",
-  780,
-  390
+  760,
+  420
 );
