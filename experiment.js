@@ -59,12 +59,6 @@ ctx.save();
 ctx.translate(40, 470);
 ctx.rotate(-Math.PI / 2);
 
-ctx.fillText(
-  "Exploration Capacity",
-  0,
-  0
-);
-
 ctx.restore();
 
 // ===== Freeze Threshold =====
