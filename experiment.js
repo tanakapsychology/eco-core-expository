@@ -196,3 +196,24 @@ ctx.fillText(
   760,
   420
 );
+ctx.fillText(
+  "Exploration Capacity",
+  20,
+  350
+);
+ctx.fillText(
+  "Time / Branching Load",
+  420,
+  640
+);
+ctx.setLineDash([8,8]);
+
+ctx.strokeStyle = "black";
+ctx.lineWidth = 2;
+
+ctx.beginPath();
+ctx.moveTo(120, 420);
+ctx.lineTo(1020, 420);
+ctx.stroke();
+
+ctx.setLineDash([]);
