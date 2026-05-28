@@ -1,4 +1,4 @@
-const canvas = document.createElement("canvas");
+・const canvas = document.createElement("canvas");
 canvas.width = 1400;
 canvas.height = 900;
 document.body.appendChild(canvas);
@@ -52,8 +52,8 @@ ctx.font = "bold 28px Arial";
 
 ctx.fillText(
   "Freeze / Local Fixation Zone",
-  720,
-  190
+  680,
+  180
 );
 
 // =====================================================
@@ -79,8 +79,8 @@ ctx.font = "34px Arial";
 
 ctx.fillText(
   "Time / Branching Load",
-  470,
-  840
+  430,
+  810
 );
 
 // Vertical axis
@@ -121,8 +121,8 @@ ctx.font = "24px Arial";
 
 ctx.fillText(
   "Freeze Threshold",
-  900,
-  430
+  860,
+  420
 );
 
 // =====================================================
@@ -277,8 +277,8 @@ ctx.font = "bold 26px Arial";
 
 ctx.fillText(
   "Resource Saturation",
-  820,
-  250
+  790,
+  240
 );
 
 // =====================================================
@@ -355,7 +355,7 @@ ctx.font = "22px Arial";
 ctx.fillText(
   "PCC = Predictive Cognitive Collapse",
   140,
-  790
+  805
 );
 
 ctx.font = "20px Arial";
@@ -363,5 +363,5 @@ ctx.font = "20px Arial";
 ctx.fillText(
   "Figure 1. Exploration collapse under increasing branching factor.",
   140,
-  825
+  835
 );
