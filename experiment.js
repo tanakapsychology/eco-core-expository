@@ -71,7 +71,7 @@ ctx.strokeRect(
 // =====================================================
 
 ctx.fillStyle = "black";
-ctx.font = "28px Arial";
+ctx.font = "24px Arial";
 
 // X axis
 
@@ -244,7 +244,7 @@ ctx.beginPath();
 
 ctx.moveTo(180, 680);
 ctx.lineTo(280, 500);
-ctx.lineTo(1030, 500);
+ctx.lineTo(980, 220);
 
 ctx.stroke();
 
@@ -307,10 +307,10 @@ ctx.fillText(
 ctx.fillStyle = "rgba(255,255,255,0.95)";
 
 ctx.fillRect(
-  760,
-  540,
+  720,
+  500,
   260,
-  80
+  90
 );
 
 ctx.strokeStyle = "black";
@@ -354,13 +354,13 @@ ctx.font = "20px Arial";
 
 ctx.fillText(
   "Global Search",
-  870,
+  8200,
   572
 );
 
 ctx.fillText(
   "Local Processing",
-  870,
+  820,
   602
 );
 
