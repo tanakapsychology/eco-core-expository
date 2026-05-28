@@ -199,3 +199,7 @@ ctx.fillText(
   60,
   350
 );
+Figure 1.
+Exploration collapse under increasing branching factor (bf).
+Thick lines indicate global search capacity.
+Thin lines indicate accumulated local processing load.
