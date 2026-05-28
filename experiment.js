@@ -166,7 +166,7 @@ ctx.beginPath();
 ctx.moveTo(150, 570);
 ctx.lineTo(260, 450);
 ctx.lineTo(380, 300);
-ctx.lineTo(520, 120);
+ctx.lineTo(520, 180);
 ctx.stroke();
 
 // ===== 凡例 =====
