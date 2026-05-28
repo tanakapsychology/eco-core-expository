@@ -21,9 +21,9 @@ ctx.fillText(
 // =====================================================
 // Graph Area
 // =====================================================
-const gx = 120;
+const gx = 160;
 const gy = 120;
-const gw = 820;
+const gw = 760;
 const gh = 500;
 // =====================================================
 // Freeze Zone
@@ -78,7 +78,7 @@ ctx.fillStyle = "gray";
 ctx.font = "18px Arial";
 ctx.fillText(
   "Freeze Threshold",
-  720,
+  760,
   345
 );
 // =====================================================
@@ -176,13 +176,13 @@ ctx.fillStyle = "black";
 ctx.font = "18px Arial";
 ctx.fillText(
   "Thick line = Global Search",
-  660,
-  400
+  620,
+  470
 );
 ctx.fillText(
   "Thin line = Local Processing",
-  660,
-  430
+  620,
+  500
 );
 // =====================================================
 // Exploration Capacity Label
@@ -193,4 +193,49 @@ ctx.fillText(
   "Exploration Capacity",
   140,
   345
+);
+// =====================================
+// Additional Labels
+// =====================================
+
+ctx.fillStyle = "black";
+ctx.font = "16px Arial";
+
+// PCC正式名称
+ctx.fillText(
+  "PCC = Predictive Cognitive Collapse",
+  120,
+  660
+);
+
+// Resource Saturation
+ctx.fillStyle = "darkred";
+ctx.font = "18px Arial";
+
+ctx.fillText(
+  "Resource Saturation",
+  650,
+  200
+);
+
+// Freeze後の探索停止説明
+ctx.fillStyle = "black";
+ctx.font = "16px Arial";
+
+ctx.fillText(
+  "Global exploration collapses after saturation",
+  540,
+  250
+);
+// =====================================================
+// Figure Caption
+// =====================================================
+
+ctx.fillStyle = "black";
+ctx.font = "15px Arial";
+
+ctx.fillText(
+  "Figure 1. Exploration collapse under increasing branching factor.",
+  160,
+  695
 );
