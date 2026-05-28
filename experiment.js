@@ -23,7 +23,7 @@ ctx.fillText(
 // =====================================================
 const gx = 160;
 const gy = 120;
-const gw = 760;
+const gw = 680;
 const gh = 500;
 // =====================================================
 // Freeze Zone
@@ -176,13 +176,13 @@ ctx.fillStyle = "black";
 ctx.font = "18px Arial";
 ctx.fillText(
   "Thick line = Global Search",
-  620,
-  470
+  560,
+  500
 );
 ctx.fillText(
   "Thin line = Local Processing",
-  620,
-  500
+  560,
+  530
 );
 // =====================================================
 // Exploration Capacity Label
