@@ -1,6 +1,6 @@
 const canvas = document.createElement("canvas");
-canvas.width = 1100;
-canvas.height = 650;
+canvas.width = 1200;
+canvas.height = 700;
 document.body.appendChild(canvas);
 
 const ctx = canvas.getContext("2d");
@@ -11,125 +11,188 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 // ===== タイトル =====
 ctx.fillStyle = "black";
-ctx.font = "bold 42px Arial";
+ctx.font = "bold 40px Arial";
+
 ctx.fillText(
-  "Exploration Collapse under Branching Load",
+  "ECM PCC Comparison",
   60,
   60
 );
 
-// ===== グラフ枠 =====
-const graphX = 100;
-const graphY = 100;
-const graphW = 850;
-const graphH = 450;
-
-ctx.strokeStyle = "black";
-ctx.lineWidth = 2;
-ctx.strokeRect(graphX, graphY, graphW, graphH);
+// ===== グラフ範囲 =====
+const gx = 120;
+const gy = 120;
+const gw = 900;
+const gh = 500;
 
 // ===== Freeze領域 =====
 ctx.fillStyle = "rgba(255,0,0,0.08)";
-ctx.fillRect(450, 100, 500, 450);
+ctx.fillRect(500, gy, 520, gh);
 
 ctx.fillStyle = "red";
 ctx.font = "20px Arial";
+
 ctx.fillText(
   "Freeze / Local Fixation Zone",
-  560,
-  130
+  640,
+  150
 );
 
-// ===== Freeze Threshold =====
+// ===== 枠 =====
 ctx.strokeStyle = "black";
 ctx.lineWidth = 2;
-ctx.setLineDash([10, 10]);
 
-ctx.beginPath();
-ctx.moveTo(graphX, 320);
-ctx.lineTo(graphX + graphW, 320);
-ctx.stroke();
-
-ctx.setLineDash([]);
-
-ctx.fillStyle = "black";
-ctx.font = "18px Arial";
-ctx.fillText("Freeze Threshold", 760, 305);
+ctx.strokeRect(gx, gy, gw, gh);
 
 // ===== 軸 =====
-ctx.font = "22px Arial";
+ctx.font = "24px Arial";
+ctx.fillStyle = "black";
 
 ctx.fillText(
   "Time / Branching Load",
-  390,
-  610
+  420,
+  670
 );
 
 ctx.save();
-ctx.translate(40, 420);
+
+ctx.translate(40, 470);
 ctx.rotate(-Math.PI / 2);
 
 ctx.fillText(
-  "Global Search Capacity",
+  "Exploration Capacity",
   0,
   0
 );
 
 ctx.restore();
 
-// ===== bf=2 =====
+// ===== Freeze Threshold =====
+ctx.setLineDash([10, 10]);
+
+ctx.strokeStyle = "gray";
+ctx.lineWidth = 2;
+
+ctx.beginPath();
+ctx.moveTo(gx, 360);
+ctx.lineTo(gx + gw, 360);
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+ctx.fillStyle = "gray";
+ctx.font = "18px Arial";
+
+ctx.fillText(
+  "Freeze Threshold",
+  820,
+  345
+);
+
+// =====================================================
+// bf = 2
+// =====================================================
+
+// Global Search
 ctx.strokeStyle = "green";
-ctx.lineWidth = 6;
+ctx.lineWidth = 8;
 
 ctx.beginPath();
-ctx.moveTo(120, 520);
-ctx.lineTo(260, 350);
-ctx.lineTo(420, 230);
-ctx.lineTo(900, 230);
+ctx.moveTo(150, 560);
+ctx.lineTo(300, 380);
+ctx.lineTo(480, 220);
+ctx.lineTo(920, 220);
 ctx.stroke();
 
-// ===== bf=5 =====
+// Local Processing
+ctx.strokeStyle = "green";
+ctx.lineWidth = 2;
+
+ctx.beginPath();
+ctx.moveTo(150, 570);
+ctx.lineTo(260, 540);
+ctx.lineTo(420, 500);
+ctx.lineTo(600, 430);
+ctx.lineTo(760, 380);
+ctx.lineTo(920, 300);
+ctx.stroke();
+
+// =====================================================
+// bf = 5
+// =====================================================
+
+// Global Search
 ctx.strokeStyle = "blue";
-ctx.lineWidth = 6;
+ctx.lineWidth = 8;
 
 ctx.beginPath();
-ctx.moveTo(120, 520);
-ctx.lineTo(240, 420);
-ctx.lineTo(420, 350);
-ctx.lineTo(650, 230);
-ctx.lineTo(900, 230);
+ctx.moveTo(150, 560);
+ctx.lineTo(260, 450);
+ctx.lineTo(420, 300);
+ctx.lineTo(920, 300);
 ctx.stroke();
 
-// ===== bf=8 =====
+// Local Processing
+ctx.strokeStyle = "blue";
+ctx.lineWidth = 2;
+
+ctx.beginPath();
+ctx.moveTo(150, 570);
+ctx.lineTo(320, 500);
+ctx.lineTo(500, 380);
+ctx.lineTo(680, 260);
+ctx.lineTo(920, 160);
+ctx.stroke();
+
+// =====================================================
+// bf = 8
+// =====================================================
+
+// Global Search
 ctx.strokeStyle = "red";
-ctx.lineWidth = 6;
+ctx.lineWidth = 8;
 
 ctx.beginPath();
-ctx.moveTo(120, 520);
-ctx.lineTo(220, 420);
-ctx.lineTo(300, 320);
-ctx.lineTo(300, 320);
-ctx.lineTo(900, 320);
+ctx.moveTo(150, 560);
+ctx.lineTo(240, 420);
+ctx.lineTo(920, 420);
 ctx.stroke();
 
-// ===== ラベル =====
+// Local Processing
+ctx.strokeStyle = "red";
+ctx.lineWidth = 2;
+
+ctx.beginPath();
+ctx.moveTo(150, 570);
+ctx.lineTo(260, 450);
+ctx.lineTo(380, 300);
+ctx.lineTo(520, 120);
+ctx.stroke();
+
+// ===== 凡例 =====
 ctx.font = "20px Arial";
 
 ctx.fillStyle = "green";
-ctx.fillText("bf = 2", 920, 235);
+ctx.fillText("bf = 2", 930, 225);
 
 ctx.fillStyle = "blue";
-ctx.fillText("bf = 5", 920, 260);
+ctx.fillText("bf = 5", 930, 305);
 
 ctx.fillStyle = "red";
-ctx.fillText("bf = 8", 920, 325);
+ctx.fillText("bf = 8", 930, 425);
 
-// ===== 説明 =====
+// ===== 線の意味 =====
 ctx.fillStyle = "black";
 ctx.font = "18px Arial";
 
 ctx.fillText(
-  "Higher branching factor accelerates collapse into local fixation.",
-  180,
-  40
+  "Thick line = Global Search",
+  780,
+  360
+);
+
+ctx.fillText(
+  "Thin line = Local Processing",
+  780,
+  390
 );
