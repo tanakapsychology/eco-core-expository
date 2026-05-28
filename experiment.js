@@ -172,10 +172,8 @@ ctx.font = "20px Arial";
 
 ctx.fillStyle = "green";
 ctx.fillText("bf = 2", 930, 225);
-
 ctx.fillStyle = "blue";
 ctx.fillText("bf = 5", 930, 305);
-
 ctx.fillStyle = "red";
 ctx.fillText("bf = 8", 930, 395);
 
