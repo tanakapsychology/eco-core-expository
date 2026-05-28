@@ -83,7 +83,7 @@ ctx.font = "18px Arial";
 
 ctx.fillText(
   "Freeze Threshold",
-  820,
+  760,
   345
 );
 
@@ -183,21 +183,13 @@ ctx.font = "18px Arial";
 
 ctx.fillText(
   "Thick line = Global Search",
-  760,
-  390
+  700,
+  410
 );
 
 ctx.fillText(
   "Thin line = Local Processing",
-  760,
-  420
+  700,
+  440
 );
-ctx.fillText(
-  "Exploration Capacity",
-  60,
-  350
-);
-Figure 1.
-Exploration collapse under increasing branching factor (bf).
-Thick lines indicate global search capacity.
-Thin lines indicate accumulated local processing load.
+
