@@ -1,154 +1,367 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ECM PCC Comparison</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    canvas {
-      background: white;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      max-width: 100%;
-    }
-  </style>
-</head>
-<body>
+const canvas = document.createElement("canvas");
+canvas.width = 1400;
+canvas.height = 900;
+document.body.appendChild(canvas);
 
-<canvas id="graph" width="1400" height="900"></canvas>
+const ctx = canvas.getContext("2d");
 
-<script>
-// ====================== ECM PCC Comparison ======================
-const canvas = document.getElementById('graph');
-const ctx = canvas.getContext('2d');
+// =====================================================
+// Background
+// =====================================================
 
-const W = 1400;
-const H = 900;
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// グラフ領域
-const gx = 160;
-const gy = 180;
-const gw = 920;
-const gh = 520;
+// =====================================================
+// Title
+// =====================================================
 
-// 背景
-ctx.fillStyle = '#ffffff';
-ctx.fillRect(0, 0, W, H);
+ctx.fillStyle = "black";
+ctx.font = "bold 52px Arial";
 
-// ==================== Title ====================
-ctx.fillStyle = '#111';
-ctx.font = 'bold 52px Arial';
-ctx.fillText('ECM PCC Comparison', 80, 95);
+ctx.fillText(
+  "ECM PCC Comparison",
+  120,
+  80
+);
 
-// ==================== Graph Frame ====================
-ctx.strokeStyle = '#222';
-ctx.lineWidth = 4;
-ctx.strokeRect(gx, gy, gw, gh);
+// =====================================================
+// Graph Area
+// =====================================================
 
-// Freeze Zone (右側)
-ctx.fillStyle = 'rgba(255, 50, 50, 0.09)';
-ctx.fillRect(gx + 480, gy, gw - 480, gh);
+const gx = 140;
+const gy = 140;
+const gw = 1050;
+const gh = 620;
 
-// ==================== Axes Labels ====================
-ctx.fillStyle = '#111';
-ctx.font = 'bold 34px Arial';
-ctx.fillText('Time / Branching Load', gx + 280, gy + gh + 70);
+// =====================================================
+// Freeze Zone
+// =====================================================
+
+ctx.fillStyle = "rgba(255,0,0,0.08)";
+
+ctx.fillRect(
+  560,
+  gy,
+  630,
+  gh
+);
+
+ctx.fillStyle = "darkred";
+ctx.font = "bold 28px Arial";
+
+ctx.fillText(
+  "Freeze / Local Fixation Zone",
+  720,
+  190
+);
+
+// =====================================================
+// Border
+// =====================================================
+
+ctx.strokeStyle = "black";
+ctx.lineWidth = 3;
+
+ctx.strokeRect(
+  gx,
+  gy,
+  gw,
+  gh
+);
+
+// =====================================================
+// Axis Labels
+// =====================================================
+
+ctx.fillStyle = "black";
+ctx.font = "34px Arial";
+
+ctx.fillText(
+  "Time / Branching Load",
+  470,
+  840
+);
+
+// Vertical axis
 
 ctx.save();
-ctx.translate(gx - 75, gy + gh/2 + 30);
+
+ctx.translate(80, 560);
 ctx.rotate(-Math.PI / 2);
-ctx.fillText('Exploration Capacity', 0, 0);
+
+ctx.fillText(
+  "Exploration Capacity",
+  0,
+  0
+);
+
 ctx.restore();
 
+// =====================================================
 // Freeze Threshold
-ctx.setLineDash([10, 8]);
-ctx.strokeStyle = '#555';
-ctx.lineWidth = 3;
+// =====================================================
+
+ctx.setLineDash([14, 10]);
+
+ctx.strokeStyle = "black";
+ctx.lineWidth = 4;
+
 ctx.beginPath();
-ctx.moveTo(gx, gy + 280);
-ctx.lineTo(gx + gw, gy + 280);
+
+ctx.moveTo(gx, 450);
+ctx.lineTo(gx + gw, 450);
+
 ctx.stroke();
+
 ctx.setLineDash([]);
 
-// Threshold Label
-ctx.fillStyle = '#666';
-ctx.font = '24px Arial';
-ctx.fillText('Freeze Threshold', gx + 680, gy + 260);
+ctx.fillStyle = "gray";
+ctx.font = "24px Arial";
 
-// Exploration Capacity Label (左側)
-ctx.fillStyle = '#111';
-ctx.font = '22px Arial';
-ctx.fillText('Exploration Capacity', gx - 20, gy + 260);
+ctx.fillText(
+  "Freeze Threshold",
+  900,
+  430
+);
 
-// ==================== Texts ====================
-ctx.fillStyle = '#c00';
-ctx.font = 'bold 28px Arial';
-ctx.fillText('Freeze / Local Fixation Zone', gx + 520, gy + 45);
+// =====================================================
+// bf = 2
+// =====================================================
 
-ctx.fillStyle = '#111';
-ctx.font = '24px Arial';
-ctx.fillText('Resource Saturation', gx + 620, gy + 110);
+// Global Search
 
-ctx.fillStyle = '#222';
-ctx.font = '22px Arial';
-ctx.fillText('Global exploration collapses after saturation', gx + 520, gy + 145);
+ctx.strokeStyle = "green";
+ctx.lineWidth = 10;
 
-// ==================== Legend ====================
-ctx.fillStyle = 'rgba(255,255,255,0.95)';
-ctx.fillRect(gx + 580, gy + 380, 320, 110);
-ctx.strokeStyle = '#222';
+ctx.beginPath();
+
+ctx.moveTo(170, 700);
+ctx.lineTo(340, 470);
+ctx.lineTo(560, 260);
+ctx.lineTo(1080, 260);
+
+ctx.stroke();
+
+// Local Processing
+
+ctx.strokeStyle = "green";
+ctx.lineWidth = 3;
+
+ctx.beginPath();
+
+ctx.moveTo(170, 710);
+ctx.lineTo(320, 660);
+ctx.lineTo(520, 590);
+ctx.lineTo(700, 500);
+ctx.lineTo(900, 400);
+ctx.lineTo(1080, 300);
+
+ctx.stroke();
+
+// =====================================================
+// bf = 5
+// =====================================================
+
+// Global Search
+
+ctx.strokeStyle = "blue";
+ctx.lineWidth = 10;
+
+ctx.beginPath();
+
+ctx.moveTo(170, 700);
+ctx.lineTo(340, 540);
+ctx.lineTo(520, 390);
+ctx.lineTo(1080, 390);
+
+ctx.stroke();
+
+// Local Processing
+
+ctx.strokeStyle = "blue";
+ctx.lineWidth = 3;
+
+ctx.beginPath();
+
+ctx.moveTo(170, 710);
+ctx.lineTo(360, 610);
+ctx.lineTo(560, 450);
+ctx.lineTo(760, 300);
+ctx.lineTo(1080, 170);
+
+ctx.stroke();
+
+// =====================================================
+// bf = 8
+// =====================================================
+
+// Global Search
+
+ctx.strokeStyle = "red";
+ctx.lineWidth = 10;
+
+ctx.beginPath();
+
+ctx.moveTo(170, 700);
+ctx.lineTo(280, 520);
+ctx.lineTo(1080, 520);
+
+ctx.stroke();
+
+// Local Processing
+
+ctx.strokeStyle = "red";
+ctx.lineWidth = 3;
+
+ctx.beginPath();
+
+ctx.moveTo(170, 710);
+ctx.lineTo(300, 560);
+ctx.lineTo(430, 380);
+ctx.lineTo(600, 240);
+
+ctx.stroke();
+
+// =====================================================
+// Labels
+// =====================================================
+
+ctx.font = "bold 26px Arial";
+
+// bf labels
+
+ctx.fillStyle = "green";
+
+ctx.fillText(
+  "bf = 2",
+  1110,
+  270
+);
+
+ctx.fillStyle = "blue";
+
+ctx.fillText(
+  "bf = 5",
+  1110,
+  400
+);
+
+ctx.fillStyle = "red";
+
+ctx.fillText(
+  "bf = 8",
+  1110,
+  530
+);
+
+// =====================================================
+// Exploration Label
+// =====================================================
+
+ctx.fillStyle = "black";
+ctx.font = "22px Arial";
+
+ctx.fillText(
+  "Exploration Capacity",
+  170,
+  435
+);
+
+// =====================================================
+// Resource Saturation
+// =====================================================
+
+ctx.fillStyle = "darkred";
+ctx.font = "bold 26px Arial";
+
+ctx.fillText(
+  "Resource Saturation",
+  820,
+  250
+);
+
+// =====================================================
+// Legend Box
+// =====================================================
+
+ctx.fillStyle = "rgba(255,255,255,0.85)";
+
+ctx.fillRect(
+  760,
+  570,
+  340,
+  100
+);
+
+ctx.strokeStyle = "black";
 ctx.lineWidth = 2;
-ctx.strokeRect(gx + 580, gy + 380, 320, 110);
 
-ctx.fillStyle = '#111';
-ctx.font = '22px Arial';
-ctx.fillText('Thick line = Global Search', gx + 600, gy + 415);
-ctx.fillText('Thin line  = Local Processing', gx + 600, gy + 445);
+ctx.strokeRect(
+  760,
+  570,
+  340,
+  100
+);
 
-// ==================== Lines ====================
+// Thick sample line
 
-// bf = 2 (Green)
-ctx.strokeStyle = '#2e8b57';
-ctx.lineWidth = 11;
+ctx.strokeStyle = "black";
+ctx.lineWidth = 10;
+
 ctx.beginPath();
-ctx.moveTo(gx + 30, gy + 420);   // start
-ctx.quadraticCurveTo(gx + 220, gy + 220, gx + 420, gy + 110);
-ctx.lineTo(gx + 820, gy + 105);
+
+ctx.moveTo(790, 610);
+ctx.lineTo(860, 610);
+
 ctx.stroke();
 
-ctx.lineWidth = 3.5;
+// Thin sample line
+
+ctx.strokeStyle = "black";
+ctx.lineWidth = 3;
+
 ctx.beginPath();
-ctx.moveTo(gx + 30, gy + 430);
-ctx.quadraticCurveTo(gx + 180, gy + 380, gx + 350, gy + 340);
-ctx.quadraticCurveTo(gx + 580, gy + 280, gx + 820, gy + 210);
+
+ctx.moveTo(790, 650);
+ctx.lineTo(860, 650);
+
 ctx.stroke();
 
-// bf = 5 (Blue)
-ctx.strokeStyle = '#1e88e5';
-ctx.lineWidth = 11;
-ctx.beginPath();
-ctx.moveTo(gx + 30, gy + 420);
-ctx.quadraticCurveTo(gx + 200, gy + 280, gx + 430, gy + 190);
-ctx.lineTo(gx + 820, gy + 185);
-ctx.stroke();
+// Legend text
 
-ctx.lineWidth = 3.5;
-ctx.beginPath();
-ctx.moveTo(gx + 30, gy + 430);
-ctx.quadraticCurveTo(gx + 280, gy + 340, gx + 520, gy + 240);
-ctx.quadraticCurveTo(gx + 680, gy + 170, gx + 820, gy + 130);
-ctx.stroke();
+ctx.fillStyle = "black";
+ctx.font = "22px Arial";
 
-// bf = 8 (Red)
-ctx.strokeStyle = '#e53935';
-ctx.lineWidth = 11;
-ctx.beginPath();
-ctx.moveTo(g​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+ctx.fillText(
+  "Global Search",
+  890,
+  618
+);
+
+ctx.fillText(
+  "Local Processing",
+  890,
+  658
+);
+
+// =====================================================
+// Footer
+// =====================================================
+
+ctx.fillStyle = "black";
+ctx.font = "22px Arial";
+
+ctx.fillText(
+  "PCC = Predictive Cognitive Collapse",
+  140,
+  790
+);
+
+ctx.font = "20px Arial";
+
+ctx.fillText(
+  "Figure 1. Exploration collapse under increasing branching factor.",
+  140,
+  825
+);
