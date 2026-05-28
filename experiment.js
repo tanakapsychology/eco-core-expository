@@ -177,7 +177,7 @@ ctx.fillStyle = "blue";
 ctx.fillText("bf = 5", 930, 305);
 
 ctx.fillStyle = "red";
-ctx.fillText("bf = 8", 930, 425);
+ctx.fillText("bf = 8", 930, 395);
 
 // ===== 線の意味 =====
 ctx.fillStyle = "black";
