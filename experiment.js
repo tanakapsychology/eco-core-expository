@@ -118,8 +118,8 @@ ctx.font = "bold 24px Arial";
 
 ctx.fillText(
   "Resource Saturation",
-  760,
-  225
+  690,
+  210
 );
 
 // =====================================================
@@ -302,12 +302,14 @@ ctx.fillText(
 // LEGEND
 // =====================================================
 
+// Legend box
+
 ctx.fillStyle = "rgba(255,255,255,0.96)";
 
 ctx.fillRect(
-  760,
-  540,
-  300,
+  700,
+  530,
+  320,
   110
 );
 
@@ -315,9 +317,9 @@ ctx.strokeStyle = "black";
 ctx.lineWidth = 2;
 
 ctx.strokeRect(
-  760,
-  540,
-  300,
+  700,
+  530,
+  320,
   110
 );
 
@@ -328,8 +330,8 @@ ctx.lineWidth = 8;
 
 ctx.beginPath();
 
-ctx.moveTo(790, 575);
-ctx.lineTo(870, 575);
+ctx.moveTo(730, 570);
+ctx.lineTo(810, 570);
 
 ctx.stroke();
 
@@ -340,8 +342,8 @@ ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(790, 620);
-ctx.lineTo(870, 620);
+ctx.moveTo(730, 615);
+ctx.lineTo(810, 615);
 
 ctx.stroke();
 
@@ -352,16 +354,15 @@ ctx.font = "22px Arial";
 
 ctx.fillText(
   "Global Search",
-  900,
-  583
+  845,
+  578
 );
 
 ctx.fillText(
   "Local Processing",
-  900,
-  628
+  845,
+  623
 );
-
 // =====================================================
 // FOOTER
 // =====================================================
