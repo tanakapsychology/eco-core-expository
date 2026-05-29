@@ -22,32 +22,35 @@ function drawLine(pts, lw, dash) {
 
 // ── graph box ────────────────────────────────────────────────
 const GX  = 130;
-const GY  = 110;
+const GY  = 120;
 const GW  = 750;
 const GH  = 500;
-const GX2 = GX + GW;   // 880
-const GY2 = GY + GH;   // 610
+const GX2 = GX + GW;  // 880
+const GY2 = GY + GH;  // 620
 
-// ── key coordinates ───────────────────────────────────────────
-// X: EC onset point (where M crosses Mc)
-const X_EC = GX + 480;
+// ── threshold Y positions ─────────────────────────────────────
+const Y_MC = GY + 250;   // Mc line (upper threshold)
+const Y_LC = GY + 380;   // Lc line (lower threshold)
 
-// Y: Mc horizontal threshold
-const Y_MC = GY + 310;
+// ── M line: right-downward ────────────────────────────────────
+const M_LEFT  = GY + 50;   // M at left edge (high)
+const M_RIGHT = GY + 460;  // M at right edge (low, below Mc)
 
-// Y: Lc horizontal threshold
-const Y_LC = GY + 390;
+// ── L line: gentle right-downward, stays above Lc ────────────
+const L_LEFT  = GY + 180;  // L at left edge
+const L_RIGHT = GY + 320;  // L at right edge (above Lc)
 
-// M line: starts high (left), drops, flattens below Mc after X_EC
-const M_LEFT  = GY + 60;    // M at x=GX (high exploration)
-const M_RIGHT = GY + 420;   // M at x=GX2 (low, below Mc)
+// ── EC onset X: where M crosses Mc ───────────────────────────
+// M is linear: y = M_LEFT + (M_RIGHT - M_LEFT) * (x - GX) / GW
+// solve for y = Y_MC:
+const X_EC = GX + (Y_MC - M_LEFT) / (M_RIGHT - M_LEFT) * GW;
 
-// L line: starts moderate, drops slowly, stays above Lc
-const L_LEFT  = GY + 200;   // L at x=GX
-const L_RIGHT = GY + 340;   // L at x=GX2 (above Lc)
-
-// PCC region: right of X_EC, between Mc and Lc
-const X_PCC = X_EC;
+// ── PCC region: M < Mc (below Y_MC) AND L > Lc (above Y_LC) ─
+// X range: X_EC to GX2
+// Y range: Y_MC to Y_LC  (between the two thresholds)
+// But we also need L > Lc, which is true throughout since L_RIGHT < Y_LC... 
+// wait: L stays ABOVE Lc means L pixel value < Y_LC (higher on canvas = lower pixel)
+// L_RIGHT = GY+320 = 440, Y_LC = GY+380 = 500 → L_RIGHT < Y_LC ✓ L is above Lc
 
 // ── background ───────────────────────────────────────────────
 ctx.fillStyle = "white";
@@ -55,17 +58,14 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 // ── title ────────────────────────────────────────────────────
 ctx.fillStyle = "black";
-ctx.font      = "bold 26px Arial";
+ctx.font      = "bold 24px Arial";
 ctx.textAlign = "center";
-ctx.fillText(
-  "Exploratory Collapse (EC) and Preserved-Capacity Collapse (PCC)",
-  canvas.width / 2, 60
-);
+ctx.fillText("State-space representation of Preserved-Capacity Collapse (PCC)", canvas.width / 2, 65);
 ctx.textAlign = "left";
 
-// ── PCC shaded region (right of X_EC, full height for now, clipped later) ─
-ctx.fillStyle = "rgba(0,0,0,0.08)";
-ctx.fillRect(X_PCC, GY, GX2 - X_PCC, GH);
+// ── PCC shaded region: x from X_EC to GX2, y from Y_MC to Y_LC ─
+ctx.fillStyle = "rgba(0,0,0,0.10)";
+ctx.fillRect(X_EC, Y_MC, GX2 - X_EC, Y_LC - Y_MC);
 
 // ── graph border ─────────────────────────────────────────────
 ctx.strokeStyle = "black";
@@ -83,8 +83,8 @@ ctx.stroke();
 clearDash();
 
 // ── Lc horizontal dashed line ─────────────────────────────────
-setDash([6, 6]);
-ctx.strokeStyle = "#555";
+setDash([6, 5]);
+ctx.strokeStyle = "black";
 ctx.lineWidth   = 1.2;
 ctx.beginPath();
 ctx.moveTo(GX,  Y_LC);
@@ -92,19 +92,11 @@ ctx.lineTo(GX2, Y_LC);
 ctx.stroke();
 clearDash();
 
-// ── M line: right-downward, kinks at EC onset ─────────────────
-// Before EC onset: steeper drop; after: continues to drop but flatter
-drawLine([
-  [GX,    M_LEFT],
-  [X_EC,  Y_MC + 5],    // arrives just at Mc
-  [GX2,   M_RIGHT]
-], 6, []);
+// ── M line ───────────────────────────────────────────────────
+drawLine([[GX, M_LEFT], [GX2, M_RIGHT]], 6, []);
 
-// ── L line: gentle right-downward, stays above Lc ─────────────
-drawLine([
-  [GX,  L_LEFT],
-  [GX2, L_RIGHT]
-], 2, []);
+// ── L line ───────────────────────────────────────────────────
+drawLine([[GX, L_LEFT], [GX2, L_RIGHT]], 2, []);
 
 // ── EC onset vertical marker ──────────────────────────────────
 setDash([6, 4]);
@@ -119,10 +111,10 @@ clearDash();
 // EC onset dot on M line
 ctx.fillStyle = "black";
 ctx.beginPath();
-ctx.arc(X_EC, Y_MC + 5, 6, 0, Math.PI * 2);
+ctx.arc(X_EC, Y_MC, 6, 0, Math.PI * 2);
 ctx.fill();
 
-// ── clip outside graph ───────────────────────────────────────
+// ── clip lines outside graph ──────────────────────────────────
 ctx.fillStyle = "white";
 ctx.fillRect(0,    0,    GX,                 canvas.height);
 ctx.fillRect(GX2,  0,    canvas.width - GX2, canvas.height);
@@ -135,99 +127,49 @@ ctx.lineWidth   = 2;
 ctx.strokeRect(GX, GY, GW, GH);
 
 // ── threshold labels (left of graph) ─────────────────────────
-ctx.font      = "15px Arial";
+ctx.font      = "16px Arial";
 ctx.fillStyle = "black";
 ctx.textAlign = "right";
 ctx.fillText("Mc", GX - 8, Y_MC + 5);
 ctx.fillText("Lc", GX - 8, Y_LC + 5);
 ctx.textAlign = "left";
 
-// ── EC onset label ────────────────────────────────────────────
+// ── EC onset label (below x-axis) ────────────────────────────
 ctx.font      = "14px Arial";
-ctx.fillStyle = "black";
 ctx.textAlign = "center";
 ctx.fillText("EC onset", X_EC, GY2 + 18);
 ctx.textAlign = "left";
 
-// ── PCC Region label (top center of shaded area) ─────────────
-ctx.font      = "bold 22px Arial";
+// ── PCC Region label (center of shaded box) ──────────────────
+ctx.font      = "bold 20px Arial";
 ctx.textAlign = "center";
 ctx.fillStyle = "black";
-ctx.fillText("PCC Region", X_PCC + (GX2 - X_PCC) / 2, GY + 38);
-
-// PCC condition formula
-ctx.font      = "15px Arial";
-ctx.fillText("M < Mc  ∧  L > Lc", X_PCC + (GX2 - X_PCC) / 2, GY + 62);
+const pccCX = X_EC + (GX2 - X_EC) / 2;
+const pccCY = (Y_MC + Y_LC) / 2;
+ctx.fillText("PCC Region", pccCX, pccCY - 12);
+ctx.font = "14px Arial";
+ctx.fillText("(M < Mc  ∧  L > Lc)", pccCX, pccCY + 12);
 ctx.textAlign = "left";
 
-// ── dissociation annotation ───────────────────────────────────
-// Arrow/brace showing M-L gap in PCC region
-const arrX = X_PCC + 60;
-const arrY1 = GY + 250;  // approx L position mid-PCC
-const arrY2 = GY + 350;  // approx M position mid-PCC
-
-ctx.strokeStyle = "black";
-ctx.lineWidth   = 1;
-// vertical brace line
-ctx.beginPath();
-ctx.moveTo(arrX, arrY1);
-ctx.lineTo(arrX, arrY2);
-ctx.stroke();
-// top tick
-ctx.beginPath(); ctx.moveTo(arrX - 6, arrY1); ctx.lineTo(arrX + 6, arrY1); ctx.stroke();
-// bottom tick
-ctx.beginPath(); ctx.moveTo(arrX - 6, arrY2); ctx.lineTo(arrX + 6, arrY2); ctx.stroke();
-
-ctx.font      = "13px Arial";
+// ── line labels (right edge) ──────────────────────────────────
+ctx.font      = "15px Arial";
 ctx.fillStyle = "black";
-ctx.fillText("dissociation", arrX + 10, (arrY1 + arrY2) / 2 + 5);
-
-// ── axis arrows ──────────────────────────────────────────────
-// X arrow
-ctx.strokeStyle = "black";
-ctx.lineWidth   = 1.5;
-ctx.beginPath();
-ctx.moveTo(GX2 - 2, GY2);
-ctx.lineTo(GX2 + 18, GY2);
-ctx.stroke();
-ctx.beginPath();
-ctx.moveTo(GX2 + 18, GY2);
-ctx.lineTo(GX2 + 10, GY2 - 5);
-ctx.lineTo(GX2 + 10, GY2 + 5);
-ctx.fill();
-
-// Y arrow
-ctx.beginPath();
-ctx.moveTo(GX, GY + 2);
-ctx.lineTo(GX, GY - 18);
-ctx.stroke();
-ctx.beginPath();
-ctx.moveTo(GX, GY - 18);
-ctx.lineTo(GX - 5, GY - 10);
-ctx.lineTo(GX + 5, GY - 10);
-ctx.fill();
+ctx.fillText("M", GX2 + 10, M_RIGHT + 5);
+ctx.fillText("L", GX2 + 10, L_RIGHT + 5);
 
 // ── axis labels ──────────────────────────────────────────────
 ctx.font      = "18px Arial";
-ctx.fillStyle = "black";
 ctx.textAlign = "center";
 ctx.fillText("Fixation Pressure / Cognitive Load", GX + GW / 2, GY2 + 48);
 
 ctx.save();
-ctx.translate(42, GY + GH / 2);
+ctx.translate(44, GY + GH / 2);
 ctx.rotate(-Math.PI / 2);
-ctx.fillText("Exploration Capacity", 0, 0);
+ctx.fillText("Capacity", 0, 0);
 ctx.restore();
 
-// ── line labels (right edge) ──────────────────────────────────
-ctx.textAlign = "left";
-ctx.font      = "16px Arial";
-ctx.fillStyle = "black";
-ctx.fillText("M  (Thought Mobility)",          GX2 + 12, M_RIGHT + 5);
-ctx.fillText("L  (Local Processing Capacity)", GX2 + 12, L_RIGHT + 5);
-
 // ── legend ───────────────────────────────────────────────────
-const LX = 140, LY = GY2 - 105, LW = 370, LH = 88;
+const LX = 140, LY = GY2 - 105, LW = 360, LH = 88;
 ctx.fillStyle = "white";
 ctx.fillRect(LX, LY, LW, LH);
 ctx.strokeStyle = "black";
@@ -245,19 +187,19 @@ ctx.beginPath(); ctx.moveTo(lx1, ly2); ctx.lineTo(lx2, ly2); ctx.stroke();
 
 ctx.fillStyle = "black";
 ctx.font      = "15px Arial";
-ctx.fillText("Thought Mobility (M)",          lxT, ly1 + 5);
-ctx.fillText("Local Processing Capacity (L)", lxT, ly2 + 5);
+ctx.fillText("M  (Thought Mobility)",          lxT, ly1 + 5);
+ctx.fillText("L  (Local Processing Capacity)", lxT, ly2 + 5);
 
 // ── caption ──────────────────────────────────────────────────
 ctx.font      = "13px Arial";
 ctx.fillStyle = "#111";
-const capY = GY2 + 70;
-ctx.fillText("PCC = Preserved-Capacity Collapse.  Mc = critical threshold of M.  Lc = critical threshold of L.", GX, capY);
+const capY = GY2 + 68;
+ctx.fillText("Mc: critical threshold of Thought Mobility.  Lc: critical threshold of Local Processing Capacity.", GX, capY);
 ctx.fillText(
-  "Figure 1. Conceptual diagram of EC and PCC under increasing fixation pressure.",
+  "Figure 2. State-space representation of PCC. The shaded region indicates the PCC state,",
   GX, capY + 22
 );
 ctx.fillText(
-  "M declines with fixation pressure; L is relatively preserved. PCC occurs when M < Mc and L > Lc (shaded region).",
+  "defined as M < Mc and L > Lc. EC onset marks the point at which M falls below Mc.",
   GX, capY + 44
 );
