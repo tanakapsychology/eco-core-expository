@@ -136,3 +136,8 @@ ctx.fillText("Mc: critical threshold of Thought Mobility.  Lc: critical threshol
 ctx.fillText("Figure 2. PCC occurs when M falls below Mc while L remains above Lc.", canvas.width/2, capY+18);
 ctx.fillText("EC onset marks the point at which M crosses Mc.", canvas.width/2, capY+36);
 ctx.textAlign = "left";
+const link = document.createElement("a");
+
+link.download = "Figure3_PCC_State_Space.png";
+link.href = canvas.toDataURL("image/png");
+link.click();
