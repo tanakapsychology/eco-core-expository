@@ -1,8 +1,8 @@
 const canvas = document.createElement("canvas");
 canvas.width  = 1600;
 canvas.height = 1050;
-document.body.style.margin      = "0";
-document.body.style.background  = "white";
+document.body.style.margin     = "0";
+document.body.style.background = "white";
 document.body.appendChild(canvas);
 const ctx = canvas.getContext("2d");
 
@@ -18,42 +18,42 @@ function line(pts, lw, dash) {
 }
 
 // ── layout ───────────────────────────────────────────────────
-const GX  = 200, GY  = 180, GW = 1100, GH = 620;
+const GX  = 200, GY = 180, GW = 1100, GH = 620;
 const GX2 = GX + GW, GY2 = GY + GH;
 
-// ── thresholds ───────────────────────────────────────────────
-const Y_MC = GY + 320;   // Mc line
-const Y_LC = GY + 490;   // Lc line (well below Mc)
+// ── Y座標設計（pixel：上ほど小さい＝高capacity）────────────
+// 左端の順序（上から）: M > L > Mc > Lc
+// 右端の順序（上から）: L > Mc > M > Lc
+// → MはMcを下回る、LはMcより上をキープ
 
-// ── M line: steep decline, crosses Mc at EC onset ────────────
-const M_L = GY  +  60;   // M left (high)
-const M_R = GY2 -  30;   // M right (low, below Lc even)
+const Y_MC = GY + 350;   // Mc閾値ライン
+const Y_LC = GY + 490;   // Lc閾値ライン
 
-// ── EC onset X: where M = Mc ─────────────────────────────────
-// M(x) = M_L + (M_R - M_L) * (x - GX) / GW  = Y_MC
+// M: 左端はMcより十分上、右端はMcより下（Lcより上）
+const M_L = GY  +  80;   // 左端M (高い)
+const M_R = GY  + 530;   // 右端M (Mcより下、Lcより上)
+
+// EC onset: MがY_MCを通過するX座標
 const t_ec = (Y_MC - M_L) / (M_R - M_L);
 const X_EC = Math.round(GX + t_ec * GW);
 
-// ── L line: gentle decline, stays between Mc and Lc on right ─
-// L left: above Mc; L right: above Lc but below Mc
-const L_L = GY  + 180;   // L left (above Mc)
-const L_R = GY  + 410;   // L right (between Mc and Lc → L > Lc always)
+// L: 左端はMより下だがMcより上、右端もMcより上をキープ
+const L_L = GY + 220;    // 左端L (MとMcの間)
+const L_R = GY + 300;    // 右端L (Mcより上で安定)
 
 // ── background ───────────────────────────────────────────────
 ctx.fillStyle = "white";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 // ── title ────────────────────────────────────────────────────
-ctx.fillStyle = "black";
-ctx.font      = "bold 34px Arial";
-ctx.textAlign = "center";
+ctx.fillStyle = "black"; ctx.font = "bold 32px Arial"; ctx.textAlign = "center";
 ctx.fillText(
   "State-Space Representation of Preserved-Capacity Collapse (PCC)",
   canvas.width / 2, 110
 );
 ctx.textAlign = "left";
 
-// ── PCC shaded region: X_EC → GX2, full height ───────────────
+// ── PCC shaded region: X_EC → GX2, full graph height ─────────
 ctx.fillStyle = "rgba(0,0,0,0.08)";
 ctx.fillRect(X_EC, GY, GX2 - X_EC, GH);
 
@@ -71,55 +71,57 @@ setDash([6, 6]); ctx.strokeStyle = "black"; ctx.lineWidth = 1.4;
 ctx.beginPath(); ctx.moveTo(GX, Y_LC); ctx.lineTo(GX2, Y_LC); ctx.stroke();
 clearDash();
 
-// ── data lines ───────────────────────────────────────────────
-line([[GX, M_L], [GX2, M_R]], 7, []);       // M
-line([[GX, L_L], [GX2, L_R]], 2.5, []);     // L
+// ── M line（急な右下がり、McをX_ECで通過）───────────────────
+line([[GX, M_L], [GX2, M_R]], 7, []);
 
-// ── EC onset vertical dotted line ────────────────────────────
+// ── L line（緩やかな右下がり、常にMcより上）─────────────────
+line([[GX, L_L], [GX2, L_R]], 2.5, []);
+
+// ── EC onset 垂直点線 ─────────────────────────────────────────
 setDash([6, 5]); ctx.strokeStyle = "black"; ctx.lineWidth = 1.2;
 ctx.beginPath(); ctx.moveTo(X_EC, GY); ctx.lineTo(X_EC, GY2); ctx.stroke();
 clearDash();
 
-// ── EC onset dot (M crosses Mc) ──────────────────────────────
+// ── EC onset 黒丸（MがMcを交差する点）───────────────────────
 ctx.fillStyle = "black";
-ctx.beginPath(); ctx.arc(X_EC, Y_MC, 8, 0, Math.PI * 2); ctx.fill();
+ctx.beginPath(); ctx.arc(X_EC, Y_MC, 9, 0, Math.PI * 2); ctx.fill();
 
-// ── clip outside graph ───────────────────────────────────────
+// ── 枠外をwhiteでクリップ ─────────────────────────────────────
 ctx.fillStyle = "white";
 ctx.fillRect(0,    0,   GX,               canvas.height);
 ctx.fillRect(GX2,  0,   canvas.width-GX2, canvas.height);
 ctx.fillRect(0,    0,   canvas.width,      GY);
 ctx.fillRect(0,    GY2, canvas.width,      canvas.height-GY2);
 
-// ── redraw border ────────────────────────────────────────────
+// ── 枠再描画 ──────────────────────────────────────────────────
 ctx.strokeStyle = "black"; ctx.lineWidth = 2;
 ctx.strokeRect(GX, GY, GW, GH);
 
-// ── threshold labels (left) ───────────────────────────────────
+// ── 閾値ラベル（左外）────────────────────────────────────────
 ctx.font = "20px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "right";
 ctx.fillText("Mc", GX - 12, Y_MC + 7);
 ctx.fillText("Lc", GX - 12, Y_LC + 7);
 ctx.textAlign = "left";
 
-// ── line labels (right) ───────────────────────────────────────
+// ── 線ラベル（右外）──────────────────────────────────────────
 ctx.font = "20px Arial";
 ctx.fillText("M", GX2 + 14, M_R + 7);
 ctx.fillText("L", GX2 + 14, L_R + 7);
 
-// ── EC onset label ────────────────────────────────────────────
+// ── EC onset ラベル（X軸下）──────────────────────────────────
 ctx.font = "18px Arial"; ctx.textAlign = "center";
 ctx.fillText("EC onset", X_EC, GY2 + 28);
 ctx.textAlign = "left";
 
-// ── PCC Region label (shaded area, top-center) ───────────────
+// ── PCC Region ラベル（灰色領域上部中央）─────────────────────
 const pccMidX = X_EC + (GX2 - X_EC) / 2;
 ctx.font = "bold 26px Arial"; ctx.textAlign = "center"; ctx.fillStyle = "black";
-ctx.fillText("PCC Region", pccMidX, GY + 52);
+ctx.fillText("PCC Region", pccMidX, GY + 55);
 ctx.font = "18px Arial";
-ctx.fillText("M < Mc  ∧  L > Lc", pccMidX, GY + 82);
+ctx.fillText("(M < Mc  ∧  L > Lc)", pccMidX, GY + 85);
 ctx.textAlign = "left";
 
-// ── axis labels ──────────────────────────────────────────────
+// ── 軸ラベル ─────────────────────────────────────────────────
 ctx.font = "22px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "center";
 ctx.fillText("Fixation Pressure / Cognitive Load", GX + GW / 2, GY2 + 68);
 ctx.save();
@@ -128,22 +130,18 @@ ctx.rotate(-Math.PI / 2);
 ctx.fillText("Capacity", 0, 0);
 ctx.restore();
 
-// ── legend — RIGHT side, below L label, clear of all lines ───
+// ── 凡例（グラフ左下の空きスペース：M・L線より下、Lc線より下）
 const LW = 460, LH = 100;
-const LX  = GX2 - LW - 20;
-const LY  = GY  + 20;       // top-right inside graph, above PCC label
-
-// check: LY region is unshaded (left of X_EC) — place left of X_EC instead
-const LX2 = GX + 20;
-const LY2 = GY + GH - 130;  // bottom-left corner, below L and M lines there
+const LX  = GX + 20;
+const LY  = GY2 - 118;   // Lc(Y_LC=670)より下の領域
 
 ctx.fillStyle = "white";
-ctx.fillRect(LX2, LY2, LW, LH);
+ctx.fillRect(LX, LY, LW, LH);
 ctx.strokeStyle = "black"; ctx.lineWidth = 1.2;
-ctx.strokeRect(LX2, LY2, LW, LH);
+ctx.strokeRect(LX, LY, LW, LH);
 
-const lx1 = LX2+20, lx2 = LX2+110, lxT = LX2+128;
-const ly1  = LY2+28, ly2  = LY2+66;
+const lx1 = LX+20, lx2 = LX+110, lxT = LX+128;
+const ly1  = LY+28, ly2  = LY+66;
 
 ctx.lineWidth = 7; clearDash();
 ctx.beginPath(); ctx.moveTo(lx1,ly1); ctx.lineTo(lx2,ly1); ctx.stroke();
@@ -151,10 +149,10 @@ ctx.lineWidth = 2.5;
 ctx.beginPath(); ctx.moveTo(lx1,ly2); ctx.lineTo(lx2,ly2); ctx.stroke();
 
 ctx.fillStyle = "black"; ctx.font = "18px Arial";
-ctx.fillText("M  (Thought Mobility)",           lxT, ly1+6);
-ctx.fillText("L  (Local Processing Capacity)",  lxT, ly2+6);
+ctx.fillText("M  (Thought Mobility)",          lxT, ly1+6);
+ctx.fillText("L  (Local Processing Capacity)", lxT, ly2+6);
 
-// ── caption ──────────────────────────────────────────────────
+// ── キャプション ──────────────────────────────────────────────
 ctx.font = "16px Arial"; ctx.fillStyle = "#111";
 const capY = GY2 + 96;
 ctx.fillText("Mc: critical threshold of Thought Mobility.  Lc: critical threshold of Local Processing Capacity.", GX, capY);
