@@ -1,7 +1,7 @@
 const canvas = document.createElement("canvas");
 
 canvas.width = 1200;
-canvas.height = 800;
+canvas.height = 850;
 
 document.body.style.margin = "0";
 document.body.style.background = "white";
@@ -21,22 +21,28 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 // =====================================================
 
 ctx.fillStyle = "black";
-ctx.font = "bold 42px Arial";
+ctx.font = "bold 38px Arial";
 
 ctx.fillText(
-  "Exploratory Collapse (EC) and Preserved-Capacity Collapse (PCC)",
-  60,
-  60
+  "Exploratory Collapse (EC) and",
+  330,
+  55
+);
+
+ctx.fillText(
+  "Preserved-Capacity Collapse (PCC)",
+  250,
+  100
 );
 
 // =====================================================
 // GRAPH AREA
 // =====================================================
 
-const gx = 120;
-const gy = 100;
-const gw = 900;
-const gh = 520;
+const gx = 140;
+const gy = 140;
+const gw = 820;
+const gh = 500;
 
 // =====================================================
 // PCC REGION
@@ -45,9 +51,9 @@ const gh = 520;
 ctx.fillStyle = "rgba(0,0,0,0.05)";
 
 ctx.fillRect(
-  620,
+  500,
   gy,
-  400,
+  460,
   gh
 );
 
@@ -72,15 +78,19 @@ ctx.strokeRect(
 ctx.fillStyle = "black";
 ctx.font = "24px Arial";
 
+// X
+
 ctx.fillText(
   "Fixation Pressure / Cognitive Load",
-  430,
-  700
+  360,
+  710
 );
+
+// Y
 
 ctx.save();
 
-ctx.translate(60, 500);
+ctx.translate(70, 470);
 ctx.rotate(-Math.PI / 2);
 
 ctx.fillText(
@@ -90,6 +100,18 @@ ctx.fillText(
 );
 
 ctx.restore();
+
+// =====================================================
+// PCC LABEL
+// =====================================================
+
+ctx.font = "bold 28px Arial";
+
+ctx.fillText(
+  "PCC Region",
+  650,
+  185
+);
 
 // =====================================================
 // EC THRESHOLD
@@ -102,63 +124,50 @@ ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(gx, 380);
-ctx.lineTo(gx + gw, 380);
+ctx.moveTo(gx, 430);
+ctx.lineTo(gx + gw, 430);
 
 ctx.stroke();
 
 ctx.setLineDash([]);
 
-ctx.fillStyle = "black";
-ctx.font = "20px Arial";
+ctx.font = "18px Arial";
 
 ctx.fillText(
   "EC Threshold (Mc)",
-  760,
-  360
-);
-
-// =====================================================
-// PCC LABEL
-// =====================================================
-
-ctx.font = "bold 28px Arial";
-
-ctx.fillText(
-  "PCC Region",
   720,
-  150
+  410
 );
 
 // =====================================================
 // LOW LOAD
 // =====================================================
 
-// M (thick)
+// M = thick solid
 
 ctx.strokeStyle = "black";
 ctx.lineWidth = 8;
 
 ctx.beginPath();
 
-ctx.moveTo(150, 580);
-ctx.lineTo(350, 420);
-ctx.lineTo(600, 250);
-ctx.lineTo(980, 250);
+ctx.moveTo(180, 600);
+ctx.lineTo(330, 450);
+ctx.lineTo(500, 280);
+ctx.lineTo(920, 280);
 
 ctx.stroke();
 
-// L (thin)
+// L = thin solid
 
 ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(150, 590);
-ctx.lineTo(350, 520);
-ctx.lineTo(600, 460);
-ctx.lineTo(820, 360);
-ctx.lineTo(980, 290);
+ctx.moveTo(180, 610);
+ctx.lineTo(350, 560);
+ctx.lineTo(520, 500);
+ctx.lineTo(700, 410);
+ctx.lineTo(920, 300);
 
 ctx.stroke();
 
@@ -166,7 +175,7 @@ ctx.stroke();
 // MODERATE LOAD
 // =====================================================
 
-ctx.setLineDash([12, 8]);
+ctx.setLineDash([14, 10]);
 
 // M
 
@@ -174,10 +183,10 @@ ctx.lineWidth = 8;
 
 ctx.beginPath();
 
-ctx.moveTo(150, 580);
-ctx.lineTo(350, 500);
-ctx.lineTo(600, 360);
-ctx.lineTo(980, 360);
+ctx.moveTo(180, 600);
+ctx.lineTo(340, 520);
+ctx.lineTo(500, 400);
+ctx.lineTo(920, 400);
 
 ctx.stroke();
 
@@ -187,11 +196,11 @@ ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(150, 590);
-ctx.lineTo(350, 540);
-ctx.lineTo(600, 420);
-ctx.lineTo(820, 290);
-ctx.lineTo(980, 220);
+ctx.moveTo(180, 610);
+ctx.lineTo(350, 570);
+ctx.lineTo(520, 450);
+ctx.lineTo(720, 320);
+ctx.lineTo(900, 240);
 
 ctx.stroke();
 
@@ -209,9 +218,9 @@ ctx.lineWidth = 8;
 
 ctx.beginPath();
 
-ctx.moveTo(150, 580);
-ctx.lineTo(280, 470);
-ctx.lineTo(980, 470);
+ctx.moveTo(180, 600);
+ctx.lineTo(280, 500);
+ctx.lineTo(920, 500);
 
 ctx.stroke();
 
@@ -221,37 +230,37 @@ ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(150, 590);
-ctx.lineTo(320, 500);
-ctx.lineTo(500, 350);
-ctx.lineTo(650, 260);
+ctx.moveTo(180, 610);
+ctx.lineTo(300, 540);
+ctx.lineTo(450, 390);
+ctx.lineTo(560, 300);
 
 ctx.stroke();
 
 ctx.setLineDash([]);
 
 // =====================================================
-// LABELS
+// LOAD LABELS
 // =====================================================
 
 ctx.font = "20px Arial";
 
 ctx.fillText(
   "Low Load",
-  1010,
-  255
+  980,
+  285
 );
 
 ctx.fillText(
   "Moderate Load",
-  1010,
-  365
+  980,
+  405
 );
 
 ctx.fillText(
   "High Load",
-  1010,
-  475
+  980,
+  505
 );
 
 // =====================================================
@@ -259,21 +268,22 @@ ctx.fillText(
 // =====================================================
 
 ctx.fillStyle = "white";
+
 ctx.fillRect(
-  640,
-  470,
+  580,
+  520,
   320,
-  120
+  90
 );
 
 ctx.strokeStyle = "black";
 ctx.lineWidth = 1;
 
 ctx.strokeRect(
-  640,
-  470,
+  580,
+  520,
   320,
-  120
+  90
 );
 
 // Thick sample
@@ -282,8 +292,8 @@ ctx.lineWidth = 8;
 
 ctx.beginPath();
 
-ctx.moveTo(670, 510);
-ctx.lineTo(760, 510);
+ctx.moveTo(610, 550);
+ctx.lineTo(700, 550);
 
 ctx.stroke();
 
@@ -293,50 +303,60 @@ ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(670, 550);
-ctx.lineTo(760, 550);
+ctx.moveTo(610, 585);
+ctx.lineTo(700, 585);
 
 ctx.stroke();
 
 // Text
 
 ctx.fillStyle = "black";
-ctx.font = "20px Arial";
+ctx.font = "18px Arial";
 
 ctx.fillText(
   "Thought Mobility (M)",
-  790,
-  517
+  720,
+  557
 );
 
 ctx.fillText(
   "Local Processing Capacity (L)",
-  790,
-  557
+  720,
+  592
 );
 
 // =====================================================
-// CAPTION
+// PCC DEFINITION
 // =====================================================
-
-ctx.fillStyle = "black";
 
 ctx.font = "18px Arial";
 
 ctx.fillText(
+  "PCC = Preserved-Capacity Collapse",
+  140,
+  760
+);
+
+// =====================================================
+// FIGURE CAPTION
+// =====================================================
+
+ctx.font = "17px Arial";
+
+ctx.fillText(
   "Figure 1. Emergence of Exploratory Collapse (EC) and Preserved-Capacity Collapse (PCC)",
-  120,
-  740
+  140,
+  795
 );
 
 ctx.fillText(
   "under increasing fixation pressure. Thick lines represent Thought Mobility (M),",
-  120,
-  765
+  140,
+  820
 );
 
 ctx.fillText(
   "whereas thin lines represent Local Processing Capacity (L).",
-  120,
-  790
+  140,
+  842
 );
