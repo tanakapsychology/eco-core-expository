@@ -1,7 +1,7 @@
 const canvas = document.createElement("canvas");
 
-canvas.width = 1400;
-canvas.height = 900;
+canvas.width = 1200;
+canvas.height = 800;
 
 document.body.style.margin = "0";
 document.body.style.background = "white";
@@ -21,33 +21,33 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 // =====================================================
 
 ctx.fillStyle = "black";
-ctx.font = "bold 50px Arial";
+ctx.font = "bold 42px Arial";
 
 ctx.fillText(
-  "Exploratory Collapse and Preserved-Capacity Collapse",
-  80,
-  80
+  "Exploratory Collapse (EC) and Preserved-Capacity Collapse (PCC)",
+  60,
+  60
 );
 
 // =====================================================
 // GRAPH AREA
 // =====================================================
 
-const gx = 150;
-const gy = 120;
-const gw = 980;
-const gh = 600;
+const gx = 120;
+const gy = 100;
+const gw = 900;
+const gh = 520;
 
 // =====================================================
 // PCC REGION
 // =====================================================
 
-ctx.fillStyle = "rgba(255,0,0,0.08)";
+ctx.fillStyle = "rgba(0,0,0,0.05)";
 
 ctx.fillRect(
-  520,
+  620,
   gy,
-  610,
+  400,
   gh
 );
 
@@ -56,7 +56,7 @@ ctx.fillRect(
 // =====================================================
 
 ctx.strokeStyle = "black";
-ctx.lineWidth = 3;
+ctx.lineWidth = 2;
 
 ctx.strokeRect(
   gx,
@@ -70,25 +70,21 @@ ctx.strokeRect(
 // =====================================================
 
 ctx.fillStyle = "black";
-ctx.font = "28px Arial";
-
-// X axis
+ctx.font = "24px Arial";
 
 ctx.fillText(
   "Fixation Pressure / Cognitive Load",
-  420,
-  790
+  430,
+  700
 );
-
-// Y axis
 
 ctx.save();
 
-ctx.translate(80, 560);
+ctx.translate(60, 500);
 ctx.rotate(-Math.PI / 2);
 
 ctx.fillText(
-  "Thought Mobility (M)",
+  "Capacity",
   0,
   0
 );
@@ -96,104 +92,73 @@ ctx.fillText(
 ctx.restore();
 
 // =====================================================
-// PCC REGION LABEL
-// =====================================================
-
-ctx.fillStyle = "darkred";
-ctx.font = "bold 34px Arial";
-
-ctx.fillText(
-  "PCC Region",
-  700,
-  175
-);
-
-// =====================================================
-// EC ZONE LABEL
-// =====================================================
-
-ctx.fillStyle = "darkred";
-ctx.font = "bold 24px Arial";
-
-ctx.fillText(
-  "Exploratory Collapse Zone",
-  650,
-  210
-);
-
-// =====================================================
 // EC THRESHOLD
 // =====================================================
 
-ctx.setLineDash([12, 10]);
+ctx.setLineDash([10, 8]);
 
 ctx.strokeStyle = "black";
-ctx.lineWidth = 3;
+ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(gx, 440);
-ctx.lineTo(gx + gw, 440);
+ctx.moveTo(gx, 380);
+ctx.lineTo(gx + gw, 380);
 
 ctx.stroke();
 
 ctx.setLineDash([]);
 
-// Label
-
-ctx.fillStyle = "gray";
-ctx.font = "22px Arial";
-
-ctx.fillText(
-  "EC Threshold (Mc)",
-  820,
-  420
-);
-
-// =====================================================
-// THOUGHT MOBILITY LABEL
-// =====================================================
-
 ctx.fillStyle = "black";
 ctx.font = "20px Arial";
 
 ctx.fillText(
-  "Thought Mobility",
-  170,
-  415
+  "EC Threshold (Mc)",
+  760,
+  360
+);
+
+// =====================================================
+// PCC LABEL
+// =====================================================
+
+ctx.font = "bold 28px Arial";
+
+ctx.fillText(
+  "PCC Region",
+  720,
+  150
 );
 
 // =====================================================
 // LOW LOAD
 // =====================================================
 
-// M
+// M (thick)
 
-ctx.strokeStyle = "green";
-ctx.lineWidth = 10;
+ctx.strokeStyle = "black";
+ctx.lineWidth = 8;
 
 ctx.beginPath();
 
-ctx.moveTo(180, 680);
-ctx.lineTo(340, 460);
-ctx.lineTo(520, 270);
-ctx.lineTo(1020, 270);
+ctx.moveTo(150, 580);
+ctx.lineTo(350, 420);
+ctx.lineTo(600, 250);
+ctx.lineTo(980, 250);
 
 ctx.stroke();
 
-// L
+// L (thin)
 
-ctx.strokeStyle = "green";
-ctx.lineWidth = 3;
+ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(180, 690);
-ctx.lineTo(340, 640);
-ctx.lineTo(520, 580);
-ctx.lineTo(700, 490);
-ctx.lineTo(860, 400);
-ctx.lineTo(1020, 310);
+ctx.moveTo(150, 590);
+ctx.lineTo(350, 520);
+ctx.lineTo(600, 460);
+ctx.lineTo(820, 360);
+ctx.lineTo(980, 290);
 
 ctx.stroke();
 
@@ -201,170 +166,177 @@ ctx.stroke();
 // MODERATE LOAD
 // =====================================================
 
+ctx.setLineDash([12, 8]);
+
 // M
 
-ctx.strokeStyle = "blue";
-ctx.lineWidth = 10;
+ctx.lineWidth = 8;
 
 ctx.beginPath();
 
-ctx.moveTo(180, 680);
-ctx.lineTo(360, 540);
-ctx.lineTo(520, 390);
-ctx.lineTo(1020, 390);
+ctx.moveTo(150, 580);
+ctx.lineTo(350, 500);
+ctx.lineTo(600, 360);
+ctx.lineTo(980, 360);
 
 ctx.stroke();
 
 // L
 
-ctx.strokeStyle = "blue";
-ctx.lineWidth = 3;
+ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(180, 690);
-ctx.lineTo(360, 600);
-ctx.lineTo(560, 450);
-ctx.lineTo(760, 300);
+ctx.moveTo(150, 590);
+ctx.lineTo(350, 540);
+ctx.lineTo(600, 420);
+ctx.lineTo(820, 290);
 ctx.lineTo(980, 220);
 
 ctx.stroke();
+
+ctx.setLineDash([]);
 
 // =====================================================
 // HIGH LOAD
 // =====================================================
 
+ctx.setLineDash([2, 8]);
+
 // M
 
-ctx.strokeStyle = "red";
-ctx.lineWidth = 10;
+ctx.lineWidth = 8;
 
 ctx.beginPath();
 
-ctx.moveTo(180, 680);
-ctx.lineTo(300, 510);
-ctx.lineTo(1020, 510);
+ctx.moveTo(150, 580);
+ctx.lineTo(280, 470);
+ctx.lineTo(980, 470);
 
 ctx.stroke();
 
 // L
 
-ctx.strokeStyle = "red";
-ctx.lineWidth = 3;
+ctx.lineWidth = 2;
 
 ctx.beginPath();
 
-ctx.moveTo(180, 690);
-ctx.lineTo(320, 560);
-ctx.lineTo(450, 390);
-ctx.lineTo(590, 280);
+ctx.moveTo(150, 590);
+ctx.lineTo(320, 500);
+ctx.lineTo(500, 350);
+ctx.lineTo(650, 260);
 
 ctx.stroke();
 
+ctx.setLineDash([]);
+
 // =====================================================
-// LOAD LABELS
+// LABELS
 // =====================================================
 
-ctx.font = "bold 24px Arial";
+ctx.font = "20px Arial";
 
-ctx.fillStyle = "green";
 ctx.fillText(
   "Low Load",
-  1040,
-  280
+  1010,
+  255
 );
 
-ctx.fillStyle = "blue";
 ctx.fillText(
   "Moderate Load",
-  1040,
-  400
+  1010,
+  365
 );
 
-ctx.fillStyle = "red";
 ctx.fillText(
   "High Load",
-  1040,
-  520
+  1010,
+  475
 );
 
 // =====================================================
 // LEGEND
 // =====================================================
 
-ctx.fillStyle = "rgba(255,255,255,0.97)";
+ctx.fillStyle = "white";
 ctx.fillRect(
-  650,
-  520,
-  380,
+  640,
+  470,
+  320,
   120
 );
 
 ctx.strokeStyle = "black";
-ctx.lineWidth = 2;
+ctx.lineWidth = 1;
 
 ctx.strokeRect(
-  650,
-  520,
-  380,
+  640,
+  470,
+  320,
   120
 );
 
-// Thick line
+// Thick sample
 
-ctx.strokeStyle = "black";
 ctx.lineWidth = 8;
 
 ctx.beginPath();
-ctx.moveTo(680, 560);
-ctx.lineTo(770, 560);
+
+ctx.moveTo(670, 510);
+ctx.lineTo(760, 510);
+
 ctx.stroke();
 
-// Thin line
+// Thin sample
 
-ctx.strokeStyle = "black";
 ctx.lineWidth = 2;
 
 ctx.beginPath();
-ctx.moveTo(680, 610);
-ctx.lineTo(770, 610);
+
+ctx.moveTo(670, 550);
+ctx.lineTo(760, 550);
+
 ctx.stroke();
 
-// Legend text
+// Text
 
 ctx.fillStyle = "black";
-ctx.font = "22px Arial";
+ctx.font = "20px Arial";
 
 ctx.fillText(
   "Thought Mobility (M)",
-  800,
-  568
+  790,
+  517
 );
 
 ctx.fillText(
   "Local Processing Capacity (L)",
-  800,
-  618
+  790,
+  557
 );
 
 // =====================================================
-// FOOTER
+// CAPTION
 // =====================================================
 
 ctx.fillStyle = "black";
 
-ctx.font = "22px Arial";
-
-ctx.fillText(
-  "PCC = Preserved-Capacity Collapse",
-  150,
-  820
-);
-
 ctx.font = "18px Arial";
 
 ctx.fillText(
-  "Figure 1. Emergence of Exploratory Collapse (EC) and Preserved-Capacity Collapse (PCC) under increasing fixation pressure.",
-  150,
-  855
+  "Figure 1. Emergence of Exploratory Collapse (EC) and Preserved-Capacity Collapse (PCC)",
+  120,
+  740
+);
+
+ctx.fillText(
+  "under increasing fixation pressure. Thick lines represent Thought Mobility (M),",
+  120,
+  765
+);
+
+ctx.fillText(
+  "whereas thin lines represent Local Processing Capacity (L).",
+  120,
+  790
 );
