@@ -1,407 +1,215 @@
 const canvas = document.createElement("canvas");
-canvas.width = 1200;
+canvas.width  = 1200;
 canvas.height = 850;
-
-document.body.style.margin = "0";
+document.body.style.margin     = "0";
 document.body.style.background = "white";
 document.body.appendChild(canvas);
-
 const ctx = canvas.getContext("2d");
 
-// =====================================================
-// HELPERS
-// =====================================================
+function setDash(d)  { ctx.setLineDash(d); }
+function clearDash() { ctx.setLineDash([]); }
 
-function dash(d) {
-  ctx.setLineDash(d);
-}
-
-function solid() {
-  ctx.setLineDash([]);
-}
-
-function drawLine(x1, y1, x2, y2, width) {
-  ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x2, y2);
-  ctx.lineWidth = width;
+function line(pts, lw, dash) {
   ctx.strokeStyle = "black";
+  ctx.lineWidth   = lw;
+  setDash(dash || []);
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
   ctx.stroke();
+  clearDash();
 }
 
-// =====================================================
-// LAYOUT
-// =====================================================
-
-const GX = 170;
-const GY = 150;
-
-const GW = 760;
-const GH = 500;
-
+// ── layout ───────────────────────────────────────────────────
+const GX  = 160;
+const GY  = 160;
+const GW  = 780;
+const GH  = 500;
 const GX2 = GX + GW;
 const GY2 = GY + GH;
 
-// =====================================================
-// MODEL POSITIONS
-// =====================================================
+// ── M: starts HIGH, drops steeply ────────────────────────────
+const M_L = GY + 60;    // M left (high)
+const M_R = GY + 460;   // M right (low)
 
-// Thought Mobility (M)
-// strong decline
+// ── L: starts BELOW M at left, drops gently ──────────────────
+// L begins below M, crosses M at EC onset, stays above M after
+const L_L = GY + 160;   // L left (below M initially)
+const L_R = GY + 230;   // L right (well above M_R)
 
-const M_START = GY + 80;
-const M_END   = GY + 430;
+// ── thresholds ───────────────────────────────────────────────
+const Y_MC = GY + 290;  // Mc
+const Y_LC = GY + 390;  // Lc
 
-// Local Processing (L)
-// mild decline
+// ── EC onset: intersection of M and L ────────────────────────
+// M(x) = M_L + (M_R - M_L) * t,  t = (x - GX) / GW
+// L(x) = L_L + (L_R - L_L) * t
+// intersection: M_L + (M_R-M_L)*t = L_L + (L_R-L_L)*t
+// t = (L_L - M_L) / ((M_R - M_L) - (L_R - L_L))
+const t_cross = (L_L - M_L) / ((M_R - M_L) - (L_R - L_L));
+const X_EC  = Math.round(GX + t_cross * GW);
+const Y_CROSS = Math.round(M_L + (M_R - M_L) * t_cross);
 
-const L_START = GY + 180;
-const L_END   = GY + 290;
-
-// thresholds
-
-const MC = GY + 270;
-const LC = GY + 390;
-
-// EC onset
-
-const X_EC =
-  GX +
-  ((MC - M_START) /
-   (M_END - M_START)) *
-  GW;
-
-// =====================================================
-// BACKGROUND
-// =====================================================
-
+// ── background ───────────────────────────────────────────────
 ctx.fillStyle = "white";
-ctx.fillRect(
-  0,
-  0,
-  canvas.width,
-  canvas.height
-);
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// =====================================================
-// TITLE
-// =====================================================
-
+// ── title ────────────────────────────────────────────────────
 ctx.fillStyle = "black";
-ctx.font = "bold 30px Arial";
+ctx.font      = "bold 26px Arial";
 ctx.textAlign = "center";
-
 ctx.fillText(
-  "PCC State Space",
-  canvas.width / 2,
-  75
+  "State-space representation of Preserved-Capacity Collapse (PCC)",
+  canvas.width / 2, 80
 );
-
 ctx.textAlign = "left";
 
-// =====================================================
-// PCC REGION
-// =====================================================
+// ── PCC shaded region: M < Mc AND L > Lc ─────────────────────
+// x: X_EC to GX2, y: Y_MC to Y_LC
+ctx.fillStyle = "rgba(0,0,0,0.09)";
+ctx.fillRect(X_EC, Y_MC, GX2 - X_EC, Y_LC - Y_MC);
 
-ctx.fillStyle =
-  "rgba(0,0,0,0.08)";
-
-ctx.fillRect(
-  X_EC,
-  GY,
-  GX2 - X_EC,
-  GH
-);
-
-// =====================================================
-// GRAPH BORDER
-// =====================================================
-
+// ── graph border ─────────────────────────────────────────────
 ctx.strokeStyle = "black";
-ctx.lineWidth = 2;
+ctx.lineWidth   = 2;
+ctx.strokeRect(GX, GY, GW, GH);
 
-ctx.strokeRect(
-  GX,
-  GY,
-  GW,
-  GH
-);
-
-// =====================================================
-// THRESHOLDS
-// =====================================================
-
-dash([10, 6]);
-
-drawLine(
-  GX,
-  MC,
-  GX2,
-  MC,
-  1.5
-);
-
-solid();
-
-dash([5, 5]);
-
-drawLine(
-  GX,
-  LC,
-  GX2,
-  LC,
-  1
-);
-
-solid();
-
-// =====================================================
-// EC ONSET
-// =====================================================
-
-dash([5, 5]);
-
-drawLine(
-  X_EC,
-  GY,
-  X_EC,
-  GY2,
-  1
-);
-
-solid();
-
+// ── Mc dashed line ───────────────────────────────────────────
+setDash([10, 6]);
+ctx.strokeStyle = "black";
+ctx.lineWidth   = 1.5;
 ctx.beginPath();
+ctx.moveTo(GX, Y_MC); ctx.lineTo(GX2, Y_MC);
+ctx.stroke();
+clearDash();
 
-ctx.arc(
-  X_EC,
-  MC,
-  5,
-  0,
-  Math.PI * 2
-);
+// ── Lc dashed line ───────────────────────────────────────────
+setDash([5, 5]);
+ctx.strokeStyle = "black";
+ctx.lineWidth   = 1.2;
+ctx.beginPath();
+ctx.moveTo(GX, Y_LC); ctx.lineTo(GX2, Y_LC);
+ctx.stroke();
+clearDash();
 
+// ── M line ───────────────────────────────────────────────────
+line([[GX, M_L], [GX2, M_R]], 6, []);
+
+// ── L line ───────────────────────────────────────────────────
+line([[GX, L_L], [GX2, L_R]], 2, []);
+
+// ── EC onset vertical dotted line ────────────────────────────
+setDash([5, 5]);
+ctx.strokeStyle = "black";
+ctx.lineWidth   = 1;
+ctx.beginPath();
+ctx.moveTo(X_EC, GY); ctx.lineTo(X_EC, GY2);
+ctx.stroke();
+clearDash();
+
+// ── EC onset dot at M=L crossing ─────────────────────────────
 ctx.fillStyle = "black";
+ctx.beginPath();
+ctx.arc(X_EC, Y_CROSS, 7, 0, Math.PI * 2);
 ctx.fill();
 
-// =====================================================
-// M LINE
-// =====================================================
+// ── clip outside graph ───────────────────────────────────────
+ctx.fillStyle = "white";
+ctx.fillRect(0,    0,   GX,               canvas.height);
+ctx.fillRect(GX2,  0,   canvas.width-GX2, canvas.height);
+ctx.fillRect(0,    0,   canvas.width,      GY);
+ctx.fillRect(0,    GY2, canvas.width,      canvas.height-GY2);
 
-drawLine(
-  GX,
-  M_START,
-  GX2,
-  M_END,
-  6
-);
+// ── redraw border ────────────────────────────────────────────
+ctx.strokeStyle = "black";
+ctx.lineWidth   = 2;
+ctx.strokeRect(GX, GY, GW, GH);
 
-// =====================================================
-// L LINE
-// =====================================================
-
-drawLine(
-  GX,
-  L_START,
-  GX2,
-  L_END,
-  2
-);
-
-// =====================================================
-// LABELS
-// =====================================================
-
-ctx.font = "16px Arial";
-
+// ── threshold labels ─────────────────────────────────────────
+ctx.font      = "16px Arial";
+ctx.fillStyle = "black";
 ctx.textAlign = "right";
-
-ctx.fillText(
-  "Mc",
-  GX - 10,
-  MC + 5
-);
-
-ctx.fillText(
-  "Lc",
-  GX - 10,
-  LC + 5
-);
-
+ctx.fillText("Mc", GX - 10, Y_MC + 5);
+ctx.fillText("Lc", GX - 10, Y_LC + 5);
 ctx.textAlign = "left";
 
-ctx.fillText(
-  "M",
-  GX2 + 10,
-  M_END + 5
-);
+// ── line labels (right edge) ─────────────────────────────────
+ctx.font      = "16px Arial";
+ctx.fillText("M", GX2 + 10, M_R + 5);
+ctx.fillText("L", GX2 + 10, L_R + 5);
 
-ctx.fillText(
-  "L",
-  GX2 + 10,
-  L_END + 5
-);
-
-// =====================================================
-// EC LABEL
-// =====================================================
-
-ctx.font = "14px Arial";
+// ── EC onset label + annotation ──────────────────────────────
+ctx.font      = "14px Arial";
 ctx.textAlign = "center";
-
-ctx.fillText(
-  "EC onset",
-  X_EC,
-  GY2 + 22
-);
-
+ctx.fillText("EC onset", X_EC, GY2 + 20);
+// annotation above crossing point
+ctx.font      = "12px Arial";
+ctx.fillText("M = L", X_EC + 55, Y_CROSS - 14);
+ctx.fillText("(functional dissociation begins)", X_EC + 55, Y_CROSS + 2);
 ctx.textAlign = "left";
 
-// =====================================================
-// PCC LABEL
-// =====================================================
-
-const PCC_X =
-  X_EC +
-  (GX2 - X_EC) / 2;
-
+// ── PCC Region label ─────────────────────────────────────────
+const pccMidX = X_EC + (GX2 - X_EC) / 2;
+const pccMidY = (Y_MC + Y_LC) / 2;
+ctx.font      = "bold 18px Arial";
 ctx.textAlign = "center";
-
-ctx.font =
-  "bold 24px Arial";
-
-ctx.fillText(
-  "PCC Region",
-  PCC_X,
-  GY + 120
-);
-
-ctx.font =
-  "15px Arial";
-
-ctx.fillText(
-  "M < Mc   ∧   L > Lc",
-  PCC_X,
-  GY + 145
-);
-
+ctx.fillStyle = "black";
+ctx.fillText("PCC Region", pccMidX, pccMidY - 12);
+ctx.font      = "13px Arial";
+ctx.fillText("(M < Mc  ∧  L > Lc)", pccMidX, pccMidY + 10);
 ctx.textAlign = "left";
 
-// =====================================================
-// AXES
-// =====================================================
-
-ctx.font = "20px Arial";
+// ── axis labels ──────────────────────────────────────────────
+ctx.font      = "19px Arial";
+ctx.fillStyle = "black";
 ctx.textAlign = "center";
-
-ctx.fillText(
-  "Fixation Pressure / Cognitive Load",
-  GX + GW / 2,
-  GY2 + 55
-);
+ctx.fillText("Fixation Pressure / Cognitive Load", GX + GW / 2, GY2 + 52);
 
 ctx.save();
-
-ctx.translate(
-  55,
-  GY + GH / 2
-);
-
-ctx.rotate(
-  -Math.PI / 2
-);
-
-ctx.fillText(
-  "Capacity",
-  0,
-  0
-);
-
+ctx.translate(48, GY + GH / 2);
+ctx.rotate(-Math.PI / 2);
+ctx.fillText("Capacity", 0, 0);
 ctx.restore();
 
-// =====================================================
-// LEGEND
-// =====================================================
-
-const LX = GX + 15;
-const LY = GY2 - 80;
+// ── legend (bottom-left, clear of lines) ─────────────────────
+const LX = GX + 10;
+const LY = GY2 - 95;
+const LW = 360;
+const LH = 78;
 
 ctx.fillStyle = "white";
-
-ctx.fillRect(
-  LX,
-  LY,
-  260,
-  60
-);
-
+ctx.fillRect(LX, LY, LW, LH);
 ctx.strokeStyle = "black";
+ctx.lineWidth   = 1;
+ctx.strokeRect(LX, LY, LW, LH);
 
-ctx.strokeRect(
-  LX,
-  LY,
-  260,
-  60
-);
+const lx1 = LX + 16, lx2 = LX + 96, lxT = LX + 110;
+const ly1  = LY + 24, ly2  = LY + 54;
 
-// M sample
-
-drawLine(
-  LX + 15,
-  LY + 20,
-  LX + 75,
-  LY + 20,
-  6
-);
-
-// L sample
-
-drawLine(
-  LX + 15,
-  LY + 45,
-  LX + 75,
-  LY + 45,
-  2
-);
+ctx.lineWidth = 6;
+clearDash();
+ctx.beginPath(); ctx.moveTo(lx1, ly1); ctx.lineTo(lx2, ly1); ctx.stroke();
+ctx.lineWidth = 2;
+ctx.beginPath(); ctx.moveTo(lx1, ly2); ctx.lineTo(lx2, ly2); ctx.stroke();
 
 ctx.fillStyle = "black";
-ctx.font = "13px Arial";
+ctx.font      = "15px Arial";
+ctx.fillText("M  (Thought Mobility)",          lxT, ly1 + 5);
+ctx.fillText("L  (Local Processing Capacity)", lxT, ly2 + 5);
 
+// ── caption ──────────────────────────────────────────────────
+ctx.font      = "13px Arial";
+ctx.fillStyle = "#111";
+const capY = GY2 + 76;
 ctx.fillText(
-  "M (Thought Mobility)",
-  LX + 90,
-  LY + 25
+  "Mc: critical threshold of M.  Lc: critical threshold of L.",
+  GX, capY
 );
-
 ctx.fillText(
-  "L (Local Processing)",
-  LX + 90,
-  LY + 50
+  "Figure 2. State-space representation of PCC. M and L intersect at EC onset,",
+  GX, capY + 22
 );
-
-// =====================================================
-// CAPTION
-// =====================================================
-
-ctx.font = "12px Arial";
-
-const CAP_Y =
-  GY2 + 80;
-
 ctx.fillText(
-  "Figure 2. State-space representation of PCC.",
-  GX,
-  CAP_Y
-);
-
-ctx.fillText(
-  "PCC occurs when M falls below Mc while L remains above Lc.",
-  GX,
-  CAP_Y + 18
-);
-
-ctx.fillText(
-  "EC onset marks the point at which M crosses the critical threshold Mc.",
-  GX,
-  CAP_Y + 36
+  "marking functional dissociation. Shaded region = PCC state (M < Mc and L > Lc).",
+  GX, capY + 44
 );
